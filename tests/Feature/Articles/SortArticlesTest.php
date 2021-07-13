@@ -55,16 +55,24 @@ class SortArticlesTest extends TestCase
             'content' => 'D content'
         ]);
 
-        \DB::listen(function ($db){
+      /*  \DB::listen(function ($db){
             dump($db->sql);
-        });
+        });*/
 
         $url = route('api.v1.articles.index').'?sort=title,-content';//concatenamos con el sort para que ordene primero por el titulo y despues intente ordenarlo por el contenido
 
         $this->getJson($url)->assertSeeInOrder([
-            'C Title',
-            'B Title',
             'A Title',
+            'B Title',
+            'C Title',
+        ]);
+
+        $url = route('api.v1.articles.index').'?sort=-content,title';//concatenamos con el sort para que ordene primero por el titulo y despues intente ordenarlo por el contenido
+
+        $this->getJson($url)->assertSeeInOrder([
+            'D content',
+            'C content',
+            'B content',
         ]);
     }
 }
