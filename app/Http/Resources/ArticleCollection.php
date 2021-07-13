@@ -20,7 +20,7 @@ class ArticleCollection extends ResourceCollection
                 'self' => route('api.v1.articles.index'),
             ],
             'meta' => [
-                'articles_count' => $this->collection->count()
+                'articles_count' => $this->collection->count()//cuenta cuantos articulos hay en la coleccion
             ]
         ];
     }

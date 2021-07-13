@@ -37,6 +37,8 @@ class ListArticleTest extends TestCase
     /* @test */
     public function test_can_fetch_all_articles()//verificar que podemos optener un articulo especifico
     {
+        $this->withoutExceptionHandling();
+
         $article = Article::factory()->count(3)->create();
 
         $response = $this->getJson(route('api.v1.articles.index'));//Definimos el nombre de la ruta a la que queremos hacer referencia

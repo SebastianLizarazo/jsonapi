@@ -7,12 +7,34 @@ use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
     public function index()
     {
-        return ArticleCollection::make(Article::all());
+        if(!empty(\request('sort')))
+        {
+            $direction = 'asc';//Esta va a ser la direccion que por defecto sera hacendente cuando el campo title no contenga el (-)
+            $sortFields = Str::of(\request('sort'))->explode(',');//defenimos esta variable que contendra el valor de sort que puede ser title o -title
+
+            foreach ($sortFields as $sortField)
+            {
+                //dd(\request('sort'));
+                // Str::of convertira su argumento en un objeto string con el valor que contiene el parametro sort(title)
+                if (Str::of($sortField)->startsWith('-')) {//Con el metodo startsWith le preguntamos si el string comienza con un signo (-)
+                    $direction = 'desc';
+                    $sortField = Str::of($sortField)->substr(1);//Si efectivamente el valor del sort es -title le vamos a quitar el primer caracter(-) con el metodo substr
+                    //importante volver a convertir la variable a objeto string para que pueda quitarle el primer caracter
+                }
+            }
+
+            return ArticleCollection::make(
+                Article::orderBy($sortField, $direction)->get()//sort contiene el string title y por ende lo va a ordenar de manera acendente
+            );
+        }else{
+            return ArticleCollection::make(Article::all());
+        }
 
         /*
         return response()->json([//retornamos una respuesta de tipo json
